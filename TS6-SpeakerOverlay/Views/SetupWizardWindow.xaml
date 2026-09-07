@@ -1,0 +1,287 @@
+<Window x:Class="TS6_SpeakerOverlay.Views.SetupWizardWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="TsOverlay - Configuração inicial" Height="820" Width="520"
+        WindowStartupLocation="CenterScreen" ResizeMode="NoResize"
+        WindowStyle="None" AllowsTransparency="True" Background="Transparent"
+        Topmost="True">
+
+    <Window.Resources>
+        <!-- Texto Base -->
+        <Style TargetType="TextBlock">
+            <Setter Property="FontFamily" Value="Segoe UI"/>
+            <Setter Property="Foreground" Value="#E3E5E8"/>
+        </Style>
+
+        <!-- Switch Animado (Checkbox) -->
+        <Style x:Key="ToggleSwitch" TargetType="CheckBox">
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Grid Background="Transparent">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="Auto"/>
+                            </Grid.ColumnDefinitions>
+                            <ContentPresenter VerticalAlignment="Center" HorizontalAlignment="Left" Margin="0,0,15,0"/>
+                            <Border x:Name="Track" Grid.Column="1" Width="40" Height="22" CornerRadius="11" Background="#4F545C">
+                                <Ellipse x:Name="Knob" Width="18" Height="18" Fill="White" HorizontalAlignment="Left" Margin="2,0,0,0">
+                                    <Ellipse.Effect>
+                                        <DropShadowEffect ShadowDepth="1" BlurRadius="4" Opacity="0.2"/>
+                                    </Ellipse.Effect>
+                                </Ellipse>
+                            </Border>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="Track" Property="Background" Value="#4FCD8E"/>
+                                <Setter TargetName="Knob" Property="HorizontalAlignment" Value="Right"/>
+                                <Setter TargetName="Knob" Property="Margin" Value="0,0,2,0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- RadioButtons em formato de "Cards" -->
+        <Style TargetType="RadioButton">
+            <Setter Property="Background" Value="#292B30"/>
+            <Setter Property="Foreground" Value="#B9BBBE"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Margin" Value="0,4"/>
+            <Setter Property="Padding" Value="16,14"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="RadioButton">
+                        <Border Background="{TemplateBinding Background}" 
+                                BorderBrush="{TemplateBinding BorderBrush}" 
+                                BorderThickness="{TemplateBinding BorderThickness}" 
+                                CornerRadius="12" 
+                                Padding="{TemplateBinding Padding}">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid Width="20" Height="20" Margin="0,0,12,0">
+                                    <Ellipse x:Name="OuterRing" Stroke="#72767D" StrokeThickness="2" Fill="Transparent"/>
+                                    <Ellipse x:Name="InnerDot" Fill="#4FCD8E" Margin="5" Opacity="0"/>
+                                </Grid>
+                                <ContentPresenter Grid.Column="1" VerticalAlignment="Center"/>
+                            </Grid>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter Property="BorderBrush" Value="#4FCD8E"/>
+                                <Setter Property="Background" Value="#1C2D25"/>
+                                <Setter Property="Foreground" Value="White"/>
+                                <Setter TargetName="OuterRing" Property="Stroke" Value="#4FCD8E"/>
+                                <Setter TargetName="InnerDot" Property="Opacity" Value="1"/>
+                            </Trigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter Property="Background" Value="#32353B"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- Botões de Posição -->
+        <Style x:Key="PositionPresetButton" TargetType="Button">
+            <Setter Property="Background" Value="#292B30"/>
+            <Setter Property="Foreground" Value="#B9BBBE"/>
+            <Setter Property="BorderBrush" Value="Transparent"/>
+            <Setter Property="BorderThickness" Value="2"/>
+            <Setter Property="Margin" Value="4"/>
+            <Setter Property="Padding" Value="10,12"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Bd" Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="10" Padding="{TemplateBinding Padding}">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#32353B"/>
+                                <Setter Property="Foreground" Value="White"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!-- ComboBox Suave -->
+        <Style TargetType="ComboBox">
+            <Setter Property="Height" Value="38"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#202225"/>
+            <Setter Property="BorderBrush" Value="#202225"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ComboBox">
+                        <Grid>
+                            <ToggleButton x:Name="ToggleButton" Grid.Column="2" Focusable="false" IsChecked="{Binding IsDropDownOpen, Mode=TwoWay, RelativeSource={RelativeSource TemplatedParent}}" ClickMode="Press">
+                                <ToggleButton.Template>
+                                    <ControlTemplate TargetType="ToggleButton">
+                                        <Border Background="{TemplateBinding Background}" CornerRadius="8">
+                                            <Path Data="M0,0 L4,4 L8,0" Stroke="#B9BBBE" StrokeThickness="2" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,12,0"/>
+                                        </Border>
+                                    </ControlTemplate>
+                                </ToggleButton.Template>
+                                <ToggleButton.Background>
+                                    <SolidColorBrush Color="#1E1F22"/>
+                                </ToggleButton.Background>
+                            </ToggleButton>
+                            <ContentPresenter x:Name="ContentSite" IsHitTestVisible="False" Margin="12,0,30,0" VerticalAlignment="Center" Content="{TemplateBinding SelectionBoxItem}" />
+                            <Popup x:Name="Popup" IsOpen="{TemplateBinding IsDropDownOpen}" Placement="Bottom" AllowsTransparency="True" Focusable="False" PopupAnimation="Fade">
+                                <Border Background="#292B30" BorderThickness="1" BorderBrush="#1E1F22" MaxHeight="200" MinWidth="{TemplateBinding ActualWidth}" CornerRadius="8" Margin="0,4,0,0">
+                                    <Border.Effect>
+                                        <DropShadowEffect BlurRadius="10" ShadowDepth="4" Opacity="0.3"/>
+                                    </Border.Effect>
+                                    <ScrollViewer>
+                                        <StackPanel IsItemsHost="True" KeyboardNavigation.DirectionalNavigation="Contained"/>
+                                    </ScrollViewer>
+                                </Border>
+                            </Popup>
+                        </Grid>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+
+    <Border Background="#232428" CornerRadius="16" BorderThickness="1" BorderBrush="#303238">
+        <Border.Effect>
+            <DropShadowEffect BlurRadius="30" ShadowDepth="12" Opacity="0.5"/>
+        </Border.Effect>
+
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+                <RowDefinition Height="90"/>
+            </Grid.RowDefinitions>
+
+            <!-- 1. Cabeçalho "Hero" -->
+            <Border Grid.Row="0" CornerRadius="16,16,0,0" Background="#1E1F22" Padding="30,35,30,25" Cursor="SizeAll">
+                <!-- Se você tiver um evento TitleBar_MouseDown no Code-Behind, adicione MouseDown="TitleBar_MouseDown" no Border acima -->
+                <StackPanel>
+                    <TextBlock Text="👋 Bem-vindo ao TsOverlay!" FontSize="24" FontWeight="Bold" Foreground="White" Margin="0,0,0,8"/>
+                    <TextBlock Text="Vamos configurar algumas coisas antes de começar. Dá pra mudar tudo isso depois em Configurações." Foreground="#A3A6AA" TextWrapping="Wrap" FontSize="14" LineHeight="20"/>
+                </StackPanel>
+            </Border>
+
+            <!-- 2. Conteúdo Fluído -->
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" PanningMode="VerticalOnly" Margin="0,10">
+                <StackPanel Margin="30,10,30,20">
+
+                    <!-- Passo 0: Idioma -->
+                    <TextBlock Text="Idioma / Language" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <ComboBox x:Name="LanguageComboBox" Width="220" HorizontalAlignment="Left" Margin="0,0,0,30"
+                              SelectionChanged="LanguageComboBox_SelectionChanged">
+                        <ComboBoxItem Content="Português (Brasil)" Tag="pt-BR"/>
+                        <ComboBoxItem Content="English (US)" Tag="en-US"/>
+                        <ComboBoxItem Content="Français" Tag="fr-FR"/>
+                        <ComboBoxItem Content="Русский" Tag="ru-RU"/>
+                        <ComboBoxItem Content="中文（简体）" Tag="zh-CN"/>
+                    </ComboBox>
+
+                    <!-- Passo 1 com a sua nova tela de Preview -->
+                    <TextBlock Text="1. Onde o overlay deve ficar na tela?" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,4"/>
+                    <TextBlock Text="Arraste o quadrado azul pra escolher o lugar exato, ou use um atalho abaixo." Foreground="#A3A6AA" TextWrapping="Wrap" Margin="0,0,0,15" FontSize="12"/>
+
+                    <!-- Tela de Preview com bordas arredondadas e design limpo -->
+                    <Border x:Name="PreviewScreenBorder" Background="#141518" BorderBrush="#3A3B40" BorderThickness="1"
+                            Width="420" Height="236" Margin="0,0,0,15" ClipToBounds="True" CornerRadius="8" HorizontalAlignment="Center">
+                        <Canvas x:Name="PreviewCanvas">
+                            <Border x:Name="PreviewOverlay" Background="#5865F2" Opacity="0.9" CornerRadius="6"
+                                    MouseLeftButtonDown="PreviewOverlay_MouseLeftButtonDown"
+                                    MouseMove="PreviewOverlay_MouseMove"
+                                    MouseLeftButtonUp="PreviewOverlay_MouseLeftButtonUp"
+                                    Cursor="SizeAll">
+                                <Border.Effect>
+                                    <DropShadowEffect BlurRadius="6" ShadowDepth="2" Opacity="0.4"/>
+                                </Border.Effect>
+                                <TextBlock Text="TsOverlay" Foreground="White" FontSize="10" FontWeight="Bold"
+                                           HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                            </Border>
+                        </Canvas>
+                    </Border>
+
+                    <UniformGrid Columns="2" Rows="3" Margin="0,0,0,30">
+                        <!-- Linha 1: Topo -->
+                        <Button x:Name="BtnTopLeft" Content="↖ Topo esq." Tag="TopLeft" Click="PositionButton_Click" Style="{StaticResource PositionPresetButton}"/>
+                        <Button x:Name="BtnTopRight" Content="↗ Topo dir." Tag="TopRight" Click="PositionButton_Click" Style="{StaticResource PositionPresetButton}"/>
+
+                        <!-- Linha 2: Meio -->
+                        <Button x:Name="BtnCenterLeft" Content="← Meio esq." Tag="CenterLeft" Click="PositionButton_Click" Style="{StaticResource PositionPresetButton}"/>
+                        <Button x:Name="BtnCenterRight" Content="→ Meio dir." Tag="CenterRight" Click="PositionButton_Click" Style="{StaticResource PositionPresetButton}"/>
+
+                        <!-- Linha 3: Baixo -->
+                        <Button x:Name="BtnBottomLeft" Content="↙ Baixo esq." Tag="BottomLeft" Click="PositionButton_Click" Style="{StaticResource PositionPresetButton}"/>
+                        <Button x:Name="BtnBottomRight" Content="↘ Baixo dir." Tag="BottomRight" Click="PositionButton_Click" Style="{StaticResource PositionPresetButton}"/>
+                    </UniformGrid>
+
+                    <!-- Passo 2 -->
+                    <TextBlock Text="2. Qual o processo do seu jogo/app?" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <StackPanel Margin="0,0,0,30">
+                        <DockPanel Margin="0,0,0,15">
+                            <Button Content="⟳ Atualizar" DockPanel.Dock="Right" Width="90" Margin="10,0,0,0" Click="BtnRefreshProcesses_Click" Background="#292B30" Foreground="White" Cursor="Hand" Padding="0,8" BorderThickness="0">
+                                <Button.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="8"/>
+                                    </Style>
+                                </Button.Resources>
+                            </Button>
+                            <ComboBox x:Name="ProcessComboBox" SelectionChanged="ProcessComboBox_SelectionChanged"/>
+                        </DockPanel>
+
+                        <Border Background="#292B30" CornerRadius="12" Padding="16,12">
+                            <CheckBox x:Name="ChkOnlyForTarget" Style="{StaticResource ToggleSwitch}" Checked="ChkOnlyForTarget_Changed" Unchecked="ChkOnlyForTarget_Changed">
+                                <TextBlock Text="Só mostrar o overlay quando esse app estiver focado" Foreground="#DCDDDE" FontSize="13" TextWrapping="Wrap"/>
+                            </CheckBox>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- Passo 3 -->
+                    <TextBlock Text="3. Quem exibir na lista?" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <StackPanel Margin="0,0,0,30">
+                        <RadioButton x:Name="RbShowEveryone" Content="Mostrar todo mundo no canal" GroupName="ShowMode" Checked="ShowMode_Changed"/>
+                        <RadioButton x:Name="RbShowOnlyTalking" Content="Mostrar só quem está falando" GroupName="ShowMode" Checked="ShowMode_Changed"/>
+                    </StackPanel>
+
+                    <!-- Passo 4 -->
+                    <TextBlock Text="4. Como exibir cada pessoa?" Foreground="White" FontSize="14" FontWeight="SemiBold" Margin="0,0,0,12"/>
+                    <StackPanel Margin="0,0,0,10">
+                        <RadioButton x:Name="RbAvatarPhoto" Content="Foto (avatar)" GroupName="AvatarMode" Checked="AvatarMode_Changed"/>
+                        <RadioButton x:Name="RbAvatarIndicator" Content="Bolinha colorida (indicador)" GroupName="AvatarMode" Checked="AvatarMode_Changed"/>
+                        <RadioButton x:Name="RbAvatarNone" Content="Só texto (sem foto)" GroupName="AvatarMode" Checked="AvatarMode_Changed"/>
+                    </StackPanel>
+                </StackPanel>
+            </ScrollViewer>
+
+            <!-- 3. Footer Suave -->
+            <Border Grid.Row="2" Background="#1E1F22" CornerRadius="0,0,16,16" Padding="30,0">
+                <Button Content="Concluir e travar posição" Click="BtnFinish_Click" Background="#4FCD8E" Foreground="#122A1E" FontWeight="Bold" FontSize="15" BorderThickness="0" Cursor="Hand" Height="48" HorizontalAlignment="Stretch">
+                    <Button.Resources>
+                        <Style TargetType="Border">
+                            <Setter Property="CornerRadius" Value="24"/>
+                        </Style>
+                    </Button.Resources>
+                    <Button.Effect>
+                        <DropShadowEffect Color="#4FCD8E" BlurRadius="20" Opacity="0.35" ShadowDepth="4"/>
+                    </Button.Effect>
+                </Button>
+            </Border>
+        </Grid>
+    </Border>
+</Window>

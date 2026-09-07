@@ -15,21 +15,40 @@ namespace TS6_SpeakerOverlay.Models
         [ObservableProperty] private double _windowTop = 50;
         [ObservableProperty] private double _windowLeft = 50;
 
-        [ObservableProperty] private double _uiScale = 1.0; 
+        [ObservableProperty] private double _uiScale = 1.0;
         [ObservableProperty] private double _backgroundOpacity = 0.6;
         [ObservableProperty] private double _fontSize = 14.0;
         [ObservableProperty] private double _itemSpacing = 4.0;
         [ObservableProperty] private double _avatarSize = 20.0;
-        
+
         // [修改] 将 bool 改为枚举，支持三种模式
         [ObservableProperty] private AvatarMode _avatarDisplayMode = AvatarMode.Avatar;
-
+        [ObservableProperty] private bool _onlyShowForTargetProcess = false;
+        [ObservableProperty] private string _targetProcessName = "AIKABR.exe";
+        // Target window titles (comma-separated), additional detection signal
+        // more resilient against anti-cheat protected processes that change their .exe names.
+        [ObservableProperty] private string _targetWindowTitle = "";
+        [ObservableProperty] private bool _anchorRight = false;
         [ObservableProperty] private bool _enableNotifications = true;
         [ObservableProperty] private bool _showOnlyTalking = false;
         // [新增] 记忆锁定状态
-        [ObservableProperty] private bool _isLocked = false; 
+        [ObservableProperty] private bool _isLocked = false;
         [ObservableProperty] private bool _autoStart = false; // [新增] 开机自启
-        [ObservableProperty] private string _language = "zh-CN";
+        [ObservableProperty] private string _language = "pt-BR";
+
+        // Controls whether UAC has already been requested once.
+        // We only request UAC on the first run; After that we didn't ask anymore.
+        [ObservableProperty] private bool _hasRequestedAdminOnce = false;
+
+        // Tracks whether the initial run has already occurred (to automatically open Settings
+        // and check if "Remote Apps" is enabled in TS6).
+        [ObservableProperty] private bool _hasCompletedFirstRun = false;
+
+        // Populated just before applying an update (see UpdateService/App.xaml.cs)
+        // and read/cleared upon the next launch to display simplified release notes
+        // before the setup wizard runs again.
+        [ObservableProperty] private string _pendingReleaseNotes = "";
+        [ObservableProperty] private string _pendingUpdateVersion = "";
 
         public void ResetDefaults()
         {

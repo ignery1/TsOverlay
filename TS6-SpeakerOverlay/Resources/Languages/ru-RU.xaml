@@ -2,12 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="Lang_Settings_Title">Настройки</s:String>
+    <s:String x:Key="Lang_Language">ЯЗЫК</s:String>
+    <s:String x:Key="Lang_InterfaceLanguage">Язык интерфейса</s:String>
     <s:String x:Key="Lang_Appearance">ОТОБРАЖЕНИЕ</s:String>
     <s:String x:Key="Lang_FontSize">Размер шрифта</s:String>
     <s:String x:Key="Lang_AvatarSize">Размер Аватара</s:String>
     <s:String x:Key="Lang_Spacing">Разделитель</s:String>
     <s:String x:Key="Lang_Opacity">Непрозрачность</s:String>
     <s:String x:Key="Lang_Scale">Масштабирование UI</s:String>
+    <s:String x:Key="Lang_Posittion">ПОЗИЦИЯ ОВЕРЛЕЯ</s:String>
+    <s:String x:Key="Lang_SnapPosition">Закрепить оверлей в позиции на экране</s:String>
+    <s:String x:Key="Lang_AppFilter">ФИЛЬТР ПРИЛОЖЕНИЯ</s:String>
+    <s:String x:Key="Lang_AppToggle">Показывать оверлей только когда это приложение активно на переднем плане.</s:String>
     <s:String x:Key="Lang_Behavior">РЕЖИМ</s:String>
     <s:String x:Key="Lang_EnableNotify">Включить уведомления</s:String>
     <s:String x:Key="Lang_ShowOnlyTalking">Показывать только говорящих</s:String>
@@ -26,6 +32,7 @@
     <s:String x:Key="Lang_Tray_Show">Показать</s:String>
     <s:String x:Key="Lang_Tray_Hide">Скрыть</s:String>
     <s:String x:Key="Lang_Tray_Refresh">Обновить</s:String>
+    <s:String x:Key="Lang_Tray_CheckUpdate">Проверить обновления</s:String>
     <s:String x:Key="Lang_Tray_Lock">Заблокировать</s:String>
     <s:String x:Key="Lang_Tray_Unlock">Разблокировать</s:String>
     <s:String x:Key="Lang_Tray_Settings">Настройки</s:String>

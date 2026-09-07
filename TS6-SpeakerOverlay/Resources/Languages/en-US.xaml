@@ -2,12 +2,18 @@
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
                     xmlns:s="clr-namespace:System;assembly=mscorlib">
     <s:String x:Key="Lang_Settings_Title">Settings</s:String>
+    <s:String x:Key="Lang_Language">LANGUAGE</s:String>
+    <s:String x:Key="Lang_InterfaceLanguage">Interface Language</s:String>
     <s:String x:Key="Lang_Appearance">APPEARANCE</s:String>
     <s:String x:Key="Lang_FontSize">Font Size</s:String>
     <s:String x:Key="Lang_AvatarSize">Avatar Size</s:String>
     <s:String x:Key="Lang_Spacing">Spacing</s:String>
     <s:String x:Key="Lang_Opacity">Opacity</s:String>
     <s:String x:Key="Lang_Scale">UI Scale</s:String>
+    <s:String x:Key="Lang_Posittion">OVERLAY POSITION</s:String>
+    <s:String x:Key="Lang_SnapPosition">Snap the overlay to a position on screen</s:String>
+    <s:String x:Key="Lang_AppFilter">APP FILTER</s:String>
+    <s:String x:Key="Lang_AppToggle">Only show the overlay when this app is in the foreground.</s:String>
     <s:String x:Key="Lang_Behavior">BEHAVIOR</s:String>
     <s:String x:Key="Lang_EnableNotify">Enable Notifications</s:String>
     <s:String x:Key="Lang_ShowOnlyTalking">Show Only Talking</s:String>
@@ -28,6 +34,7 @@
     <s:String x:Key="Lang_Tray_Show">Show</s:String>
     <s:String x:Key="Lang_Tray_Hide">Hide</s:String>
     <s:String x:Key="Lang_Tray_Refresh">Refresh</s:String>
+    <s:String x:Key="Lang_Tray_CheckUpdate">Check for Updates</s:String>
     <s:String x:Key="Lang_Tray_Lock">Lock (Click-Through)</s:String>
     <s:String x:Key="Lang_Tray_Unlock">Unlock (Drag)</s:String>
     <s:String x:Key="Lang_Tray_Settings">Settings</s:String>

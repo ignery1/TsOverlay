@@ -6,47 +6,47 @@ namespace TS6_SpeakerOverlay.Models
 {
     public partial class User : ObservableObject
     {
-        [ObservableProperty] 
+        [ObservableProperty]
         [NotifyPropertyChangedFor(nameof(Initials))] // 名字变了，首字母也要变
         private string _name = string.Empty;
 
         [ObservableProperty] private bool _isTalking;
-        [ObservableProperty] private string _avatarUrl = string.Empty; 
+        [ObservableProperty] private string _avatarUrl = string.Empty;
 
         // 在 User 类中添加：
 
-// 在 User 类中添加：
+        // 在 User 类中添加：
 
-    public string NameColor 
-    {
-        get 
+        public string NameColor
         {
-            if (string.IsNullOrEmpty(Name)) return "#72767d"; // 默认灰
-            
-            // 简单的哈希算法，把名字转成颜色
-            int hash = Name.GetHashCode();
-            // 预设一组好看的 Discord 风格颜色
-            string[] colors = new[] 
-            { 
-                "#EB459E", "#F1C40F", "#E91E63", "#9B59B6", 
-                "#3498DB", "#1ABC9C", "#E67E22", "#E74C3C" 
-            };
-            
-            // 取绝对值防止负数，然后取模
-            int index = Math.Abs(hash) % colors.Length;
-            return colors[index];
+            get
+            {
+                if (string.IsNullOrEmpty(Name)) return "#72767d"; // 默认灰
+
+                // 简单的哈希算法，把名字转成颜色
+                int hash = Name.GetHashCode();
+                // 预设一组好看的 Discord 风格颜色
+                string[] colors = new[]
+                {
+                    "#EB459E", "#F1C40F", "#E91E63", "#9B59B6",
+                    "#3498DB", "#1ABC9C", "#E67E22", "#E74C3C"
+                };
+
+                // 取绝对值防止负数，然后取模
+                int index = Math.Abs(hash) % colors.Length;
+                return colors[index];
+            }
         }
-    }
 
         // [新增] 获取名字首字母 (用于无头像时显示)
-        public string Initials 
+        public string Initials
         {
-            get 
+            get
             {
                 if (string.IsNullOrEmpty(Name)) return "?";
                 // 取前1-2个字符，转大写
-                return Name.Length > 1 
-                    ? Name.Substring(0, 1).ToUpper() 
+                return Name.Length > 1
+                    ? Name.Substring(0, 1).ToUpper()
                     : Name.ToUpper();
             }
         }
@@ -59,5 +59,23 @@ namespace TS6_SpeakerOverlay.Models
         [ObservableProperty] private string _channelId = string.Empty;
 
         public DateTime LastTalkTime { get; set; } = DateTime.MinValue;
+
+        // Independent object copy – used when Ts6Service lends a
+        // User from its internal cache to the UI (e.g., optimistic sign-in/sign-out update).
+        // Prevents the SAME object from being referenced in both the cache (which might be
+        // overwritten/mutated on a background thread) and the ObservableCollection bound
+        // to the UI, which would risk a "wrong thread" exception when notifying of a
+        // property change on a shared object.
+        public User Clone() => new User
+        {
+            ClientId = ClientId,
+            Name = Name,
+            ChannelId = ChannelId,
+            AvatarUrl = AvatarUrl,
+            IsTalking = IsTalking,
+            IsInputMuted = IsInputMuted,
+            IsOutputMuted = IsOutputMuted,
+            IsAway = IsAway
+        };
     }
 }

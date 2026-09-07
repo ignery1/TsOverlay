@@ -28,13 +28,13 @@ namespace TS6_SpeakerOverlay.Models
         public string Identifier { get; set; } = "com.ts6.overlay";
 
         [JsonPropertyName("version")]
-        public string Version { get; set; } = "1.0.0";
+        public string Version { get; set; } = "1.0.1";
 
         [JsonPropertyName("name")]
-        public string Name { get; set; } = "Speaker Overlay";
+        public string Name { get; set; } = "Speaker Overlay - By Cleri";
         
         [JsonPropertyName("description")]
-        public string Description { get; set; } = "A lightweight overlay for gamers.";
+        public string Description { get; set; } = "Overlay para gamers.";
         
         [JsonPropertyName("content")]
         public AuthContent Content { get; set; } = new();

@@ -1,4 +1,5 @@
-﻿using System;
+using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Threading;
@@ -15,69 +16,153 @@ namespace TS6_SpeakerOverlay
     public partial class MainWindow : Window
     {
         private DispatcherTimer _topmostTimer;
-        private TrayIconHelper? _trayIcon; 
-        
-        // 拖拽变量
+        private DispatcherTimer _processWatchTimer;
+        private TrayIconHelper? _trayIcon;
+
         private bool _isDragging = false;
-        private Point _lastMousePosition; // 上一次鼠标相对于窗口的位置
+        private Point _lastMousePosition;
+
+        private bool _isExiting = false;
 
         public MainWindow()
         {
             InitializeComponent();
             this.Loaded += MainWindow_Loaded;
             this.Closing += MainWindow_Closing;
-            this.KeyDown += MainWindow_KeyDown; 
-            
-            // 绑定鼠标事件
+
             this.MouseDown += MainWindow_MouseDown;
             this.MouseMove += MainWindow_MouseMove;
             this.MouseUp += MainWindow_MouseUp;
 
             _topmostTimer = new DispatcherTimer();
-            _topmostTimer.Interval = TimeSpan.FromSeconds(2); 
+            _topmostTimer.Interval = TimeSpan.FromSeconds(2);
             _topmostTimer.Tick += (s, e) => WindowHelper.ForceTopMost(this);
             _topmostTimer.Start();
+
+            _processWatchTimer = new DispatcherTimer();
+            _processWatchTimer.Interval = TimeSpan.FromSeconds(3);
+            _processWatchTimer.Tick += (s, e) => CheckTargetProcess();
+            _processWatchTimer.Start();
+        }
+
+        private void BtnSettings_Click(object sender, RoutedEventArgs e)
+        {
+            OpenSettings();
+        }
+
+        private void Avatar_Click(object sender, MouseButtonEventArgs e)
+        {
+            if (DataContext is MainViewModel vm)
+            {
+                vm.ToggleSettingsIconCommand.Execute(null);
+            }
+            e.Handled = true;
+        }
+
+        private void CheckTargetProcess()
+        {
+            if (DataContext is not MainViewModel vm) return;
+
+            if (!vm.Config.OnlyShowForTargetProcess || string.IsNullOrWhiteSpace(vm.Config.TargetProcessName))
+            {
+                if (!this.IsVisible)
+                {
+                    this.Show();
+                    WindowHelper.HideFromAltTab(this);
+                }
+                return;
+            }
+
+            string? foregroundProcess = WindowHelper.GetForegroundProcessName();
+            string? foregroundTitle = WindowHelper.GetForegroundWindowTitle();
+            bool targetIsForeground = TargetProcessHelper.Matches(vm.Config, foregroundProcess, foregroundTitle);
+            bool ownWindowIsForeground = WindowHelper.IsForegroundOwnProcess();
+
+            bool shouldShow = targetIsForeground || ownWindowIsForeground;
+
+            if (shouldShow && !this.IsVisible)
+            {
+                this.Show();
+                WindowHelper.HideFromAltTab(this);
+            }
+            else if (!shouldShow && this.IsVisible)
+            {
+                this.Hide();
+            }
         }
 
         private void MainWindow_Loaded(object sender, RoutedEventArgs e)
         {
+            WindowHelper.HideFromAltTab(this);
+
             _trayIcon = new TrayIconHelper(
-                this, GetIsLocked, Lock, Unlock, OpenSettings, RefreshData,
+                this, GetIsLocked, OpenSettings, RefreshData, CheckForUpdatesFromTray,
                 (trayIcon) => _trayIcon = trayIcon
             );
 
-            // 手动加载位置
             if (DataContext is MainViewModel vm)
             {
                 this.Left = vm.Config.WindowLeft;
                 this.Top = vm.Config.WindowTop;
 
+                vm.Config.PropertyChanged += (s, args) =>
+                {
+                    if (args.PropertyName == nameof(vm.Config.WindowLeft)) this.Left = vm.Config.WindowLeft;
+                    if (args.PropertyName == nameof(vm.Config.WindowTop)) this.Top = vm.Config.WindowTop;
+                };
+
                 if (vm.IsOverlayLocked)
                 {
                     Lock();
                 }
+
+                // The setup wizard (initial run) and the wait for the connection to the
+                // TS6 are now orchestrated by App.xaml.cs, along with the "loading"
+                // screen that remains visible throughout this process – see App.xaml.cs.
             }
+        }
+
+        private void CheckForUpdatesFromTray()
+        {
+            _ = App.CheckForUpdatesAsync(manual: true);
         }
 
         private void MainWindow_Closing(object? sender, System.ComponentModel.CancelEventArgs e)
         {
             SaveWindowPosition();
-            if (_trayIcon == null) return;
-            e.Cancel = true;
-            this.Hide();
-            _trayIcon.UpdateTrayIcon();
+
+            if (!_isExiting)
+            {
+                if (_trayIcon == null) return;
+                e.Cancel = true;
+                this.Hide();
+                _trayIcon.UpdateTrayIcon();
+                return;
+            }
+
+            _topmostTimer.Stop();
+            _processWatchTimer.Stop();
+
+            if (DataContext is MainViewModel vm)
+            {
+                vm.SaveConfig();
+                vm.Shutdown();
+            }
         }
 
-        // --- [核心修改] 相对增量拖拽逻辑 (解决瞬移问题) ---
+        public void ExitApplication()
+        {
+            _isExiting = true;
+            this.Close();
+        }
 
         private void MainWindow_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.ChangedButton == MouseButton.Left && !GetIsLocked())
             {
                 _isDragging = true;
-                // 记录按下时，鼠标相对于窗口内部的坐标
                 _lastMousePosition = e.GetPosition(this);
-                this.CaptureMouse(); // 捕获鼠标，防止拖出窗口外丢失
+                this.CaptureMouse();
             }
         }
         private void RefreshData()
@@ -91,21 +176,11 @@ namespace TS6_SpeakerOverlay
         {
             if (_isDragging)
             {
-                // 获取当前鼠标相对于窗口的坐标
                 Point currentMousePosition = e.GetPosition(this);
-
-                // 计算位移量 (当前 - 上次)
-                // 这里的单位都是 WPF 逻辑单位，不会受 DPI 影响
                 double deltaX = currentMousePosition.X - _lastMousePosition.X;
                 double deltaY = currentMousePosition.Y - _lastMousePosition.Y;
-
-                // 应用位移到窗口位置
                 this.Left += deltaX;
                 this.Top += deltaY;
-
-                // 注意：这里不需要更新 _lastMousePosition
-                // 因为随着窗口移动，鼠标相对于窗口的逻辑位置理论上应该保持不变
-                // 任何微小的偏差直接累加到 Position 上即可
             }
         }
 
@@ -115,11 +190,9 @@ namespace TS6_SpeakerOverlay
             {
                 _isDragging = false;
                 this.ReleaseMouseCapture();
-                SaveWindowPosition(); // 拖拽结束保存
+                SaveWindowPosition();
             }
         }
-
-        // ----------------------------------------------------
 
         private void SaveWindowPosition()
         {
@@ -134,17 +207,8 @@ namespace TS6_SpeakerOverlay
         {
             if (DataContext is MainViewModel vm)
             {
-                var settingsWindow = new Views.SettingsWindow(vm);
+                var settingsWindow = new Views.SettingsWindow(vm, this);
                 settingsWindow.Show();
-            }
-        }
-
-        private void MainWindow_KeyDown(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.L && Keyboard.Modifiers == ModifierKeys.Control)
-            {
-                ToggleLock();
-                e.Handled = true;
             }
         }
 
@@ -153,35 +217,36 @@ namespace TS6_SpeakerOverlay
             return (DataContext is MainViewModel vm) && vm.IsOverlayLocked;
         }
 
-        private void Lock()
+        public void Lock()
         {
             if (DataContext is MainViewModel vm && !vm.IsOverlayLocked)
             {
                 WindowHelper.EnableClickThrough(this);
                 vm.IsOverlayLocked = true;
+                // Do not remove – without persisting it here, the locked state was never
+                // saved, and the app would always open in an unlocked state, even
+                // after the setup process had already been completed.
+                vm.Config.IsLocked = true;
                 _trayIcon?.UpdateTrayIcon();
             }
         }
 
-        private void Unlock()
+        public void Unlock()
         {
             if (DataContext is MainViewModel vm && vm.IsOverlayLocked)
             {
                 WindowHelper.DisableClickThrough(this);
                 vm.IsOverlayLocked = false;
+                vm.Config.IsLocked = false;
                 _trayIcon?.UpdateTrayIcon();
             }
-        }
-
-        private void ToggleLock()
-        {
-            if (GetIsLocked()) Unlock(); else Lock();
         }
 
         protected override void OnClosed(EventArgs e)
         {
             _trayIcon?.Dispose();
             base.OnClosed(e);
+            Environment.Exit(0);
         }
     }
 }
