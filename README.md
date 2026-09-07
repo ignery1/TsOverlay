@@ -1,75 +1,125 @@
 <div align="center">
 
-# TS6 Speaker Overlay
+# TsOverlay
 
-**A lightweight, high-performance voice overlay tool for TeamSpeak 6.**
+**A lightweight, high-performance voice overlay for TeamSpeak 6**
 
-<!-- Downloads -->
-[![Download Latest](https://img.shields.io/github/v/release/beka2nt/TS6-SpeakerOverlay?label=Download%20EXE&style=for-the-badge&color=orange)](https://github.com/beka2nt/TS6-SpeakerOverlay/releases/latest)
+Fork of [beka2nt/TS6-SpeakerOverlay](https://github.com/beka2nt/TS6-SpeakerOverlay)
 
-<!-- Status -->
-[![.NET 10](https://img.shields.io/badge/.NET-10.0-purple.svg)](https://dotnet.microsoft.com/)
-[![Platform](https://img.shields.io/badge/Platform-Windows-blue.svg)]()
-[![License](https://img.shields.io/badge/License-MIT-green.svg)]()
+[![Download EXE](https://img.shields.io/github/v/release/ignery1/TsOverlay?style=for-the-badge&label=Download%20EXE&color=4FCD8E)](https://github.com/ignery1/TsOverlay/releases/latest)
+[![GitHub release](https://img.shields.io/github/v/release/ignery1/TsOverlay?style=for-the-badge)](https://github.com/ignery1/TsOverlay/releases)
+[![.NET 10](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
+[![Platform](https://img.shields.io/badge/platform-Windows-0078D6?style=for-the-badge&logo=windows&logoColor=white)](#)
+[![License](https://img.shields.io/github/license/ignery1/TsOverlay?style=for-the-badge)](LICENSE)
 
-<p align="center">
-  <a href="#english">
-    <img src="https://img.shields.io/badge/Language-English-blue?style=flat-square" alt="English">
-  </a>
-  <a href="#chinese">
-    <img src="https://img.shields.io/badge/语言-中文-red?style=flat-square" alt="Chinese">
-  </a>
-</p>
+**🇧🇷 Português** | [🇬🇧 English](#-english)
 
 </div>
 
 ---
 
-<a id="english"></a>
+## 🚀 Novidades na v1.5.0
 
-## 🇬🇧 English Description
+- **Wizard de primeira execução**: escolha idioma, posição (com preview arrastável em miniatura), processo alvo e modo de exibição sem precisar caçar tudo nas Configurações.
+- **Detecção de app mais robusta**: agora casa tanto pelo nome do processo quanto pelo **título da janela** — funciona mesmo com jogos que rodam sob anti-cheat e disfarçam o nome do próprio processo.
+- **Bloqueio de arrasto automático**: destrava sozinho ao abrir Configurações, trava sozinho ao fechar — sem risco de mexer no overlay sem querer durante o jogo.
+- **Tela de erro amigável**: se algo quebrar, agora aparece uma tela com o log salvo em disco e opção de copiar, em vez do app simplesmente não abrir.
+- **Tela de carregamento persistente**: fica visível durante toda a abertura, verificação de atualização e espera pela permissão do TeamSpeak 6.
+- **Atualizador com progresso real**: pergunta antes de baixar, mostra a porcentagem do download, e tem checagem manual pelo ícone da bandeja.
+- **Ícones redesenhados**: mic/áudio/ausente agora usam formas geométricas exatas em vez de traços feitos à mão.
+- **Traduções completadas**: EN/FR/RU estavam com chaves faltando — corrigido; seletor de idioma também disponível no wizard.
 
-### 🚀 What's New in v1.4.x
-- **Config Migration (v1.4.3)**: Moved `config.json` and `apikey.txt` to the Windows AppData folder (`%AppData%\TS6-SpeakerOverlay`). This ensures settings are saved correctly even when the app is installed in protected directories like `C:\Program Files`.
-- **Persistent Lock State**: The overlay now remembers your "Locked" (Click-Through) status between launches.
-- **Enhanced Performance**: Optimized data synchronization with the TS6 client, reducing update latency to 0.2s.
-- **Expanded Localization**: Added support for **Russian (Русский)** alongside English, Chinese, and French.
+## ✨ Principais recursos
 
-### ✨ Key Features
-- **Mouse Click-Through**: Implements Windows API to allow mouse events to pass directly to the game, ensuring uninterrupted gameplay.
-- **System Tray Integration**: Supports minimizing to the tray with a full context menu for state management.
-- **Visual Feedback**: High-quality vector icons for Mute, Deafen, and Away statuses, plus toast notifications for channel events.
-- **Native Architecture**: Built with **.NET 10 Native AOT** for minimal memory footprint and instant startup.
+- **Clique-através do mouse**: usa a API do Windows pra deixar os cliques passarem direto pro jogo.
+- **Integração com a bandeja do sistema**: minimiza pra bandeja com menu completo de controle.
+- **Feedback visual**: ícones vetoriais nítidos para mudo, sem áudio e ausente, além de notificações de entrada/saída no canal.
+- **Arquitetura nativa**: .NET 10, publicado como single-file self-contained — um único `.exe`, sem instalador.
 
-### 📦 How to Use
-1. **Download**: Click the **Download EXE** badge above.
-2. **Launch**: Run `TS6-SpeakerOverlay.exe`. (Recommend "Run as Administrator" for games with Anti-Cheat like EAC).
-3. **Authorize**: Click **"Allow"** in your TeamSpeak 6 client.
-4. **Configure**: Right-click the tray icon to open the Settings menu.
+## 📦 Como usar
+
+1. **Baixe**: clique no badge "Download EXE" acima.
+2. **Execute**: rode o `TsOverlay.exe`. Na primeira vez, o wizard de configuração abre sozinho.
+3. **Autorize**: clique em "Permitir" no seu cliente TeamSpeak 6 quando solicitado.
+4. **Ajuste quando quiser**: clique com o botão direito no ícone da bandeja → Configurações.
+
+## Mudanças em relação ao original (beka2nt v1.4.4)
+
+| Recurso | Original | TsOverlay |
+|---|---|---|
+| Nome do processo/exe | TS6-SpeakerOverlay.exe | TsOverlay.exe |
+| Publicação | Multi-arquivo | Single-file self-contained |
+| Primeira execução | Nenhuma | Wizard guiado: idioma, posição, processo alvo, exibição |
+| Detecção do app alvo | Só nome do processo | Nome do processo **e** título da janela |
+| Vários processos/jogos por overlay | ❌ | ✅ Lista com múltiplos nomes/títulos |
+| Posicionamento | Arrastar manualmente | Preview em miniatura arrastável + atalhos de canto com destaque |
+| Bloquear/desbloquear arrasto | Atalho global (Ctrl+L) + bandeja | Automático (Configurações aberta/fechada) |
+| Crash na inicialização | App simplesmente não abria | Tela de erro amigável com log salvo |
+| Tela de carregamento | Nenhuma | Splash durante toda a inicialização |
+| Atualização | Download silencioso | Confirmação + progresso real + checagem manual |
+| Ícones de status | Path vetorial único | Formas geométricas combinadas |
+| Idiomas | EN / ZH / FR / RU (traduções incompletas) | Traduções revisadas e completas |
+
+## Créditos
+
+- Projeto original: [beka2nt/TS6-SpeakerOverlay](https://github.com/beka2nt/TS6-SpeakerOverlay) (MIT)
+- Este fork: TsOverlay — robustez, setup guiado e experiência de atualização
+
+## Licença
+
+MIT — mesma do projeto original. Veja [LICENSE](LICENSE).
 
 ---
 
-<a id="chinese"></a>
+## 🇬🇧 English
 
-## 🇨🇳 中文说明 (Chinese)
+## 🚀 What's New in v1.5.0
 
-### 🚀 v1.4.x 更新摘要
-- **配置路径迁移 (v1.4.3)**：将 `config.json` 与 `apikey.txt` 迁移至系统应用数据目录 (`%AppData%\TS6-SpeakerOverlay`)。彻底解决了程序安装在 `C:\Program Files` 等受保护目录下时无法保存设置的权限问题。
-- **锁定状态记忆**：程序现在会记录“锁定/穿透”状态，重启后无需重新手动锁定。
-- **性能大幅优化**：重构了与 TS6 客户端的数据同步逻辑，状态更新延迟缩短至 0.2 秒。
-- **多语言扩展**：新增 **俄语 (Русский)** 支持。
+- **First-run setup wizard**: pick language, position (with a draggable mini-preview), target process, and display mode without hunting through Settings.
+- **More robust app detection**: now matches by process name **and** window title — works even with anti-cheat-protected games that disguise their own process name.
+- **Automatic drag lock**: unlocks itself when Settings opens, locks itself when it closes — no risk of accidentally moving the overlay mid-game.
+- **Friendly crash screen**: if something breaks, you now get a screen with the saved log and a copy option, instead of the app silently failing to open.
+- **Persistent loading screen**: stays visible through the entire startup, update check, and wait for TeamSpeak 6 permission.
+- **Updater with real progress**: asks before downloading, shows actual download percentage, and can be checked manually from the tray icon.
+- **Redesigned icons**: mic/audio/away now use exact geometric shapes instead of hand-drawn paths.
+- **Completed translations**: EN/FR/RU were missing keys — fixed; language picker also available in the setup wizard.
 
-### ✨ 核心功能
-- **鼠标事件穿透**：基于 Windows API 实现，确保悬浮窗在锁定模式下不干扰任何游戏操作。
-- **系统托盘集成**：支持最小化至托盘运行，右键菜单提供完整的控制选项。
-- **状态可视化**：采用高清矢量图标显示成员状态（闭麦、静音、离开），并提供进出频道的气泡通知。
-- **原生 AOT 编译**：基于 **.NET 10** 构建，极致轻量，无浏览器内核，极低资源占用。
+## ✨ Key Features
 
-### 📦 使用指南
-1. **下载程序**：点击顶部的 **Download EXE** 按钮获取最新版本。
-2. **运行配置**：双击运行程序。若游戏开启了 EAC 等反作弊系统，建议**以管理员身份运行**。
-3. **授权连接**：在 TeamSpeak 6 客户端弹出的请求中选择 **"允许 (Allow)"**。
-4. **调整设置**：右键点击任务栏右下角的托盘图标即可打开设置面板，自定义外观与行为。
+- **Mouse Click-Through**: uses the Windows API to let mouse events pass straight through to the game.
+- **System Tray Integration**: minimizes to the tray with a full context menu.
+- **Visual Feedback**: crisp vector icons for mute, deafened, and away, plus toast notifications for channel events.
+- **Native Architecture**: .NET 10, published as a single-file self-contained `.exe` — no installer needed.
 
-### 📄 License
-MIT License
+## 📦 How to Use
+
+1. **Download**: click the "Download EXE" badge above.
+2. **Launch**: run `TsOverlay.exe`. On first run, the setup wizard opens automatically.
+3. **Authorize**: click "Allow" in your TeamSpeak 6 client when prompted.
+4. **Configure anytime**: right-click the tray icon → Settings.
+
+## Changes vs original (beka2nt v1.4.4)
+
+| Feature | Original | TsOverlay |
+|---|---|---|
+| Process/exe name | TS6-SpeakerOverlay.exe | TsOverlay.exe |
+| Publishing | Multi-file | Single-file self-contained |
+| First run | None | Guided wizard: language, position, target app, display |
+| Target app detection | Process name only | Process name **and** window title |
+| Multiple processes/games per target | ❌ | ✅ List of multiple names/titles |
+| Positioning | Manual drag only | Draggable mini-preview + corner shortcuts with highlight |
+| Lock/unlock dragging | Global hotkey (Ctrl+L) + tray | Automatic (tied to Settings open/close) |
+| Startup crash | App silently failed to open | Friendly crash screen with saved log |
+| Loading screen | None | Splash through the whole startup |
+| Updates | Silent download | Confirmation + real progress + manual check |
+| Status icons | Single hand-drawn vector path | Combined geometric shapes |
+| Languages | EN / ZH / FR / RU (incomplete) | Reviewed, complete translations |
+
+## Credits
+
+- Original project: [beka2nt/TS6-SpeakerOverlay](https://github.com/beka2nt/TS6-SpeakerOverlay) (MIT)
+- This fork: TsOverlay — robustness, guided setup, and update experience
+
+## License
+
+MIT — same as upstream. See [LICENSE](LICENSE).
